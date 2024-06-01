@@ -35,14 +35,31 @@ public class Main extends Application {
         };
         browseButton.setOnAction(event);
         Button searchButton = new Button("Search");
+        EventHandler<ActionEvent> search = new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                searchFiles();
+            }
+        };
         resultArea.setPrefHeight(400);
         HBox hBox = new HBox(10, directoryPathField, browseButton);
         VBox vBox = new VBox(10, hBox, searchField, searchButton, resultArea);
-
-
         Scene scene = new Scene(vBox, 600, 200);
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+
+    public void searchFiles() {
+        if(directoryPathField.getText().isEmpty()) {
+            resultArea.setText("Please provide a directory path.");
+        }
+        File directory = new File(directoryPathField.getText());
+        if(!directory.isDirectory()) {
+            resultArea.setText("The provided path is not a directory.");
+        }
+        StringBuilder results = new StringBuilder();
+        listFilesInDirectory(directory, results);
+        resultArea.setText(results.toString());
     }
 
 
@@ -53,6 +70,17 @@ public class Main extends Application {
             directoryPathField.setText(selectedDirectory.getAbsolutePath());
         }
     }
+
+    private void listFilesInDirectory(File directory, StringBuilder results) {
+        File[] files = directory.listFiles();
+        if (files != null) {
+            for(File file : files) {
+                results.append(file.getAbsolutePath()).append("\n");
+            }
+        }
+    }
+
+
     public static void main(String[] args) {
         launch(args);
     }
