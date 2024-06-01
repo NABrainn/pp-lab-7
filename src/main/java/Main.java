@@ -41,6 +41,7 @@ public class Main extends Application {
                 searchFiles();
             }
         };
+        this.resultArea = new TextArea();
         resultArea.setPrefHeight(400);
         HBox hBox = new HBox(10, directoryPathField, browseButton);
         VBox vBox = new VBox(10, hBox, searchField, searchButton, resultArea);
