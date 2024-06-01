@@ -31,13 +31,7 @@ public class Main extends Application {
         Button browseButton = new Button("Browse");
         browseButton.setOnAction(e -> browseDirectory());
         Button searchButton = new Button("Search");
-        searchButton.setOnAction(e -> {
-            try {
-                searchFiles();
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        });
+        searchButton.setOnAction(e -> searchFiles());
         this.resultArea = new TextArea();
         resultArea.setPrefHeight(400);
         HBox hBox = new HBox(10, directoryPathField, browseButton);
@@ -47,7 +41,7 @@ public class Main extends Application {
         primaryStage.show();
     }
 
-    public void searchFiles() throws IOException {
+    public void searchFiles() {
         if(directoryPathField.getText().isEmpty()) {
             resultArea.setText("Please provide a directory path.");
             return;
@@ -71,7 +65,7 @@ public class Main extends Application {
         }
     }
 
-    private void searchInDirectory(File directory, StringBuilder results, String searchPhrase) throws IOException {
+    private void searchInDirectory(File directory, StringBuilder results, String searchPhrase) {
         File[] files = directory.listFiles();
         if (files != null) {
             for(File file : files) {
@@ -82,7 +76,7 @@ public class Main extends Application {
         }
     }
 
-    private boolean containsPhrase(File file, String searchPhrase) throws IOException {
+    private boolean containsPhrase(File file, String searchPhrase) {
         try(BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
