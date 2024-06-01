@@ -47,6 +47,7 @@ public class Main extends Application {
                 }
             }
         };
+        searchButton.setOnAction(search);
         this.resultArea = new TextArea();
         resultArea.setPrefHeight(400);
         HBox hBox = new HBox(10, directoryPathField, browseButton);
@@ -59,10 +60,12 @@ public class Main extends Application {
     public void searchFiles() throws IOException {
         if(directoryPathField.getText().isEmpty()) {
             resultArea.setText("Please provide a directory path.");
+            return;
         }
         File directory = new File(directoryPathField.getText());
         if(!directory.isDirectory()) {
             resultArea.setText("The provided path is not a directory.");
+            return;
         }
         StringBuilder results = new StringBuilder();
         searchInDirectory(directory, results, searchField.getText());
