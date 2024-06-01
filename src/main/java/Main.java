@@ -27,13 +27,7 @@ public class Main extends Application {
         searchField = new TextField();
         searchField.setPromptText("Enter search phrase");
         Button browseButton = new Button("Browse");
-        EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                browseDirectory();
-            }
-        };
-        browseButton.setOnAction(event);
+        browseButton.setOnAction(e -> browseDirectory());
         Button searchButton = new Button("Search");
         this.resultArea = new TextArea();
         resultArea.setPrefHeight(400);
