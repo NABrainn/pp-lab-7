@@ -29,25 +29,15 @@ public class Main extends Application {
         searchField = new TextField();
         searchField.setPromptText("Enter search phrase");
         Button browseButton = new Button("Browse");
-        EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                browseDirectory();
-            }
-        };
-        browseButton.setOnAction(event);
+        browseButton.setOnAction(e -> browseDirectory());
         Button searchButton = new Button("Search");
-        EventHandler<ActionEvent> search = new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                try {
-                    searchFiles();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+        searchButton.setOnAction(e -> {
+            try {
+                searchFiles();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
             }
-        };
-        searchButton.setOnAction(search);
+        });
         this.resultArea = new TextArea();
         resultArea.setPrefHeight(400);
         HBox hBox = new HBox(10, directoryPathField, browseButton);
@@ -81,33 +71,31 @@ public class Main extends Application {
         }
     }
 
-    private boolean containsPhrase(File file, String searchPhrase) throws IOException {
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            String line;
-            while((line = reader.readLine()) != null) {
-                if(line.contains(searchPhrase)) {
-                    return true;
-                }
-            }
-        } catch(IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-        return false;
-    }
-
     private void searchInDirectory(File directory, StringBuilder results, String searchPhrase) throws IOException {
         File[] files = directory.listFiles();
         if (files != null) {
             for(File file : files) {
-                if(containsPhrase(file, searchPhrase)) {
+                if (containsPhrase(file, searchPhrase)) {
                     results.append(file.getAbsolutePath()).append("\n");
                 }
             }
         }
     }
 
-
+    private boolean containsPhrase(File file, String searchPhrase) throws IOException {
+        try(BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.contains(searchPhrase)) {
+                    return true;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return false;
+    }
     public static void main(String[] args) {
         launch(args);
     }
