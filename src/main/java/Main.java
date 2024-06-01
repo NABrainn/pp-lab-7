@@ -54,10 +54,12 @@ public class Main extends Application {
     public void searchFiles() {
         if(directoryPathField.getText().isEmpty()) {
             resultArea.setText("Please provide a directory path.");
+            return;
         }
         File directory = new File(directoryPathField.getText());
         if(!directory.isDirectory()) {
             resultArea.setText("The provided path is not a directory.");
+            return;
         }
         StringBuilder results = new StringBuilder();
         listFilesInDirectory(directory, results);
