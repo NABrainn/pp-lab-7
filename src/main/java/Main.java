@@ -10,7 +10,9 @@ import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 
 public class Main extends Application {
@@ -38,7 +40,11 @@ public class Main extends Application {
         EventHandler<ActionEvent> search = new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                searchFiles();
+                try {
+                    searchFiles();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         };
         this.resultArea = new TextArea();
@@ -50,7 +56,7 @@ public class Main extends Application {
         primaryStage.show();
     }
 
-    public void searchFiles() {
+    public void searchFiles() throws IOException {
         if(directoryPathField.getText().isEmpty()) {
             resultArea.setText("Please provide a directory path.");
         }
@@ -59,7 +65,7 @@ public class Main extends Application {
             resultArea.setText("The provided path is not a directory.");
         }
         StringBuilder results = new StringBuilder();
-        listFilesInDirectory(directory, results);
+        searchInDirectory(directory, results, searchField.getText());
         resultArea.setText(results.toString());
     }
 
@@ -72,11 +78,28 @@ public class Main extends Application {
         }
     }
 
-    private void listFilesInDirectory(File directory, StringBuilder results) {
+    private boolean containsPhrase(File file, String searchPhrase) throws IOException {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line;
+            while((line = reader.readLine()) != null) {
+                if(line.contains(searchPhrase)) {
+                    return true;
+                }
+            }
+        } catch(IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return false;
+    }
+
+    private void searchInDirectory(File directory, StringBuilder results, String searchPhrase) throws IOException {
         File[] files = directory.listFiles();
         if (files != null) {
             for(File file : files) {
-                results.append(file.getAbsolutePath()).append("\n");
+                if(containsPhrase(file, searchPhrase)) {
+                    results.append(file.getAbsolutePath()).append("\n");
+                }
             }
         }
     }
